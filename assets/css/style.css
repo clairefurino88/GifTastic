@@ -1,8 +1,9 @@
 body {
-	background-color: salmon;
+  background-color: salmon;
+  margin: 0;
 }
 .button {
-	margin: 2px;
+	margin: 5px;
 	background-color: yellowgreen;
 	text-decoration-color: black;
 	width: 75px;
@@ -10,8 +11,10 @@ body {
 }
 
 footer {
-    position: fixed;
+  
     width: 100%;
+    bottom: 0;
+    position: fixed;
     bottom: 0;
 
 }
