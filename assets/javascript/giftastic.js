@@ -32,6 +32,7 @@ var buttonMaker = function(){
         //newGif gets the giffy title user entered
         var newGif = $('#gif-input').val();
 
+
         //Only add one instance of giffy
         for (i = 0; i < gifs.length; i++) {
         
