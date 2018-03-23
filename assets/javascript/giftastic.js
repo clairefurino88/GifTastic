@@ -1,170 +1,116 @@
+//  Initial array of animals
+var animals = ["Cats", "Dogs", "Skunks", "Squirrels", "Birds", "Bears", "Cows", "Chipmunks", "Zebras"];
 
-//giffy titles to be turned into buttons
-var gifs = ["Cats", "Dogs", "Skunks", "Squirrels", "Monkeys", "Birds", "Bears", "Cows", "Chipmunk", "Lion"
-];
+// display displayanimalGif fucntion re-renders the HTML to display the appropriate content
+function displayanimalGif() {
+	var animal = $(this).attr("data-name");
+	var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + animal + "&limit=10&api_key=dc6zaTOxFJmzC";
+	console.log("animal: " + animal);
+	console.log("queryURL: " + queryURL);
 
-//Main function
-var buttonMaker = function(){
+	//  AJAX Call for the specific button being clicked
+	$.ajax({
+		url: queryURL,
+		method: "GET"
+	}).done(function(response) {
 
-    //Create buttons from gifs array
-    for (var i = 0; i < gifs.length; i++) {
+		
+		//div to hold all the gifs
+		dAll = $("<div>");
 
-        //Adds "+" between words
-        var plusTopics = gifs[i].split(' ').join('+');
+		for (var i = 0; i < 10; i++) {
 
-        //Button attributes
-        var button = $('<button data-giffy=' + plusTopics + '>').append(gifs[i]);
+			//div to hold the gif
+			dTag = $("<div class='gifs'>");
 
-        //Add button class
-        button.addClass('button');
-        
-        //Appened to div
-        $('#gifButtons').append(button);
-        
-    }
+			//Create div to hold and display the rating
+			dRating = $("<div>");
+			dRating.append("Rating: " + response.data[i].rating);
 
-    //User adds giffy title
-    $('#addGif').on('click', function() {
+			//Create div to hold and display the gif
+			dGif = $("<div>");
 
-        //Clear the buttons so they won't duplicate on the page
-        $('#gifButtons').empty();
-         
-        //newGif gets the giffy title user entered
-        var newGif = $('#gif-input').val();
+			var image = $("<img class='gif' data-state='still'>");
+			image.attr("src", response.data[i].images.fixed_height_still.url);
+			image.attr("data-still", response.data[i].images.fixed_height_still.url);
+			image.attr("data-animate", response.data[i].images.fixed_height.url)
 
 
-        //Only add one instance of giffy
-        for (i = 0; i < gifs.length; i++) {
-        
-            //If newGif can be found in the array
-            if (newGif == gifs[i]) {
 
-               //Remove newGif from the array
-                gifs.pop(newGif);
-            }
-        }
+			dGif.append(image)
 
-        //Adds newGif to the titles array
-        gifs.push(newGif);
 
-        //Calls the loop again with the new title
-        buttonMaker();
+			
+			//put the div dTag together
+			dTag.append(dRating);
+			dTag.append(dGif);
+			dAll.append(dTag);
 
-     });
-  
-    //User clicks on giffy button
-    $('.button').on('click', function() {
+		}
 
-        //ID's which button selected
-        var giffy = $(this).data('giffy');
 
-        console.log($(this).data('giffy'));
-        
-        //Adds giffy to the queryURL
-        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + giffy + "&api_key=dc6zaTOxFJmzC&limit=10";
+		$("#gifDiv").html(dAll);
 
-        //Ajax call
-         $.ajax({
-            url: queryURL,
-            method: 'GET'
-            })
 
-        //Ajax response
-        .done(function(response) {
+	}); // ends AJAX call
 
-            //Console log object returned
-            console.log(response);
 
-            //Set the response to results variable
-            var results = response.data;
+} // ends displayanimalGif function
 
-            //Empty out previous gifs
-            $('#gifs').empty();
 
-                //Loop to display all 10 gifs
-                for (var i = 0; i < results.length; i++) {
+//Function to render buttons
+function renderButtons() {
+	//Empties the div
+	$("#buttons-view").empty();
 
-                    //Create giffyDiv
-                    var giffyDiv = $('<div>');
+	//Loops through the array of animals
+	for (var i = 0; i < animals.length; i++) {
+		var a = $("<button class='animal'>");
+		a.attr("data-name", animals[i]);
+		a.text(animals[i]);
+		$("#buttons-view").append(a);
+	}
 
-                    //Create rating p tag
-                    var ratingPtag = $('<p>');
 
-                    //Set rating to variable
-                    var rating = results[i].rating.toUpperCase();
+} //end of renderButtons function
 
-                        //Tests if rating is given
-                        if (rating == ''){
 
-                            ratingPtag.text("Not rated");
-                        }
-                        else {
-                            ratingPtag.text("Rated " + rating);
-                        }
+//Function for add gif button
+$("#add-gif").on("click", function(event) {
 
-                    //Create img tag    
-                    var giffyImage = $('<img>');
+	event.preventDefault();
+	var animal = $("#gif-input").val().trim();
+	animals.push(animal);
+    renderButtons();
+    
+    
+}); // ends add animal button
 
-                    //Attribute source
-                    giffyImage.attr("src", results[i].images.fixed_height_small_still.url);
+//  click event listener 
+$(document).on("click", ".animal", displayanimalGif);
 
-                    //Attribute still image
-                    giffyImage.attr("data-still", results[i].images.fixed_height_small_still.url);
 
-                    //Attribute active image
-                    giffyImage.attr("data-active", results[i].images.fixed_height_small.url);
 
-                    //Append the rating
-                    giffyDiv.append(ratingPtag);
+//animate on click
+$(document).on("click", ".gif", function() {
 
-                    //Append giffyImage to the div
-                    giffyDiv.append(giffyImage);
+	var state = $(this).attr("data-state");
+	var animateUrl = $(this).attr("data-animate");
+	var stillUrl = $(this).attr("data-still");
 
-                    //Prepend to #giffys
-                    $('#gifs').prepend(giffyDiv);
-                        
-                }
+	if (state === "still") {
+		$(this).attr("src", animateUrl);
+		$(this).attr("data-state", "animate");
+	}
 
-            //On click to animate gifs  
+	if (state === "animate") {
+		$(this).attr("src", stillUrl);
+		$(this).attr("data-state", "still")
+	}
 
-            $('img').on('click', function(e){
+}); // ends animate on click
 
-                console.log(e);
 
-                //Set current to the current URL
-                var current = e.currentTarget.dataset.still;
 
-                //Set active to the active URL
-                var active = e.currentTarget.dataset.active;
-
-                //Set still to the still URL
-                var still = e.currentTarget.dataset.still;
-
-                  if (current == still) { 
-                   
-                   //Switch to active URL
-                   $(this).attr('src', active);
-
-                   //Set current
-                   current = active;
-
-                }
-                
-                else {
-
-                    //Switch to still URL
-                    $(this).attr('src', still);
-
-                    //Set current
-                    current = still;
-                }
-                
-            })
-
-            })
-
-        });
-};
-
-//Start the app
-buttonMaker();
+//renders buttons on load
+renderButtons();
