@@ -81,7 +81,12 @@ $("#add-team").on("click", function(event) {
 
 	event.preventDefault();
 	var team = $("#team-input").val().trim();
+
+		if (team === '') {
+			return;
+		}
 	teams.push(team);
+	$("#team-input").val('');
 	renderButtons();
 
 }); // ends add team button
