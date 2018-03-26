@@ -3,9 +3,9 @@ var teams = ["Cats", "Dogs", "Skunks", "Squirrels", "Birds", "Bears", "Cows", "C
 
 // display displayTeamGif fucntion re-renders the HTML to display the appropriate content
 function displayTeamGif() {
-	var team = $(this).attr("data-name");
-	var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + team + "&limit=10&api_key=dc6zaTOxFJmzC";
-	console.log("Team: " + team);
+	var animal = $(this).attr("data-name");
+	var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + animal + "&limit=10&api_key=dc6zaTOxFJmzC";
+	console.log("Team: " + animal);
 	console.log("queryURL: " + queryURL);
 
 	//  AJAX Call for the specific button being clicked
@@ -39,8 +39,6 @@ function displayTeamGif() {
 
 			dGif.append(image)
 
-
-			// dGif.append("<img src='" + response.data[i].images.fixed_height_still.url + "'>");
 			
 			//put the div dTag together
 			dTag.append(dRating);
@@ -66,7 +64,7 @@ function renderButtons() {
 
 	//Loops through the array of teams
 	for (var i = 0; i < teams.length; i++) {
-		var a = $("<button class='team'>");
+		var a = $("<button class='animal'>");
 		a.attr("data-name", teams[i]);
 		a.text(teams[i]);
 		$("#buttons-view").append(a);
@@ -76,23 +74,23 @@ function renderButtons() {
 } //end of renderButtons function
 
 
-//Function for add team button
-$("#add-team").on("click", function(event) {
+//Function for add animal button
+$("#add-animal").on("click", function(event) {
 
 	event.preventDefault();
-	var team = $("#team-input").val().trim();
+	var animal = $("#animal-input").val().trim();
 
-		if (team === '') {
+		if (animal === '') {
 			return;
 		}
-	teams.push(team);
-	$("#team-input").val('');
+	teams.push(animal);
+	$("#animal-input").val('');
 	renderButtons();
 
-}); // ends add team button
+}); // ends add animal button
 
 //  click event listener 
-$(document).on("click", ".team", displayTeamGif);
+$(document).on("click", ".animal", displayTeamGif);
 
 
 
