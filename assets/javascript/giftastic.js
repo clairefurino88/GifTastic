@@ -1,8 +1,8 @@
 //  Initial array of teams
 var teams = ["Cats", "Dogs", "Skunks", "Squirrels", "Birds", "Bears", "Cows", "Chipmunks", "Zebras"];
 
-// display displayTeamGif fucntion re-renders the HTML to display the appropriate content
-function displayTeamGif() {
+// display animal fucntion re-renders the HTML to display the appropriate content
+function displayAnimalGif() {
 	var animal = $(this).attr("data-name");
 	var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + animal + "&limit=10&api_key=dc6zaTOxFJmzC";
 	console.log("Team: " + animal);
@@ -54,7 +54,7 @@ function displayTeamGif() {
 	}); // ends AJAX call
 
 
-} // ends displayTeamGif function
+} // ends displayAnimalGif function
 
 
 //Function to render buttons
@@ -90,7 +90,7 @@ $("#add-animal").on("click", function(event) {
 }); // ends add animal button
 
 //  click event listener 
-$(document).on("click", ".animal", displayTeamGif);
+$(document).on("click", ".animal", displayAnimalGif);
 
 
 
